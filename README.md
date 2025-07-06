@@ -1,2 +1,11 @@
-# guides
-Learning guides of hot topics
+- What is Software Architecture?
+- Foundation: Core Programming Principles
+- Understanding System Execution Models
+- Basic Architectural Patterns
+- Advanced Architectural Patterns
+- Microservices vs Monoliths
+- Data Management in Architecture
+- Communication Patterns
+- Cross-Cutting Concerns
+- Deployment and Operations
+- Your Learning Path
