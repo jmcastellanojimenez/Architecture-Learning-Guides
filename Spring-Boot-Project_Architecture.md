@@ -143,6 +143,9 @@ public class ProjectController {
 ---
 
 ### 🧠 **BUSINESS LOGIC LAYER** (Service)
+The Service layer in your Spring Boot app is NOT microservices. They're just services (lowercase 's') - internal components within a single application.
+Your @Service classes are like departments in one office building (same app, direct communication), Microservices are like separate companies in different 
+buildings (separate apps, network communication).
 
 #### `IProjectService.java` - Service Contract
 **Purpose:** Defines what business operations are available
