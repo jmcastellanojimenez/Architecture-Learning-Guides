@@ -2,13 +2,30 @@
 
 ## 🎯 **Java OOP Fundamentals + Spring Boot Directory Mapping**
 
-**Interface** = "I PROMISE to do these things, but I won't tell you HOW"
+**Interface** and **Implementation** are **TYPES** of **Classes**!
 
-**Implementation** = "Here's HOW I actually do those things I promised"  
+```
+🏗️ CLASS (General concept)
+├── 📋 Interface Class = "Promise class" (no implementation)
+│   └── 📄 IProjectService.java
+└── 🔨 Implementation Class = "Working class" (with actual code)
+    └── 📄 ProjectServiceImpl.java
 
-**Class** = "I am the TEMPLATE/BLUEPRINT that contains the actual code and data structure"
+💾 OBJECT = Instance created from implementation classes at runtime
+```
 
-**Object** = "I am the LIVING INSTANCE created from that template, with real data and running in memory"
+**Interface** = "I'm a SPECIAL TYPE OF CLASS that only makes promises"
+- `📄 IProjectService.java` - Contract with method signatures only
+
+**Implementation** = "I'm a REGULAR CLASS that fulfills those promises"  
+- `📄 ProjectServiceImpl.java` - Actual working code that implements the interface
+
+**Class** = "I'm the general concept - both interfaces and implementations are types of me"
+- `📄 Project.java` (Entity), `📄 ProjectController.java`, `📄 LsApplication.java`
+
+**Object** = "I'm created from implementation classes at runtime (not from interface classes)"
+- Spring creates: `projectService = new ProjectServiceImpl()`
+- You CANNOT do: `new IProjectService()` ❌
 
 ---
 
