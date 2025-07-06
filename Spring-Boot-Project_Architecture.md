@@ -1,5 +1,13 @@
 # 📁 **Complete Spring Boot Project Architecture Guide**
 
+## Annotations
+Those @ symbols are annotations - they're like special instructions or labels you put on your code to tell Spring (and Java) how to handle that class or method.
+Think of annotations as sticky notes with instructions:
+
+@SpringBootApplication = "Hey Spring, this is where you start the app!"
+@Controller = "Hey Spring, this handles web requests!"
+@Service = "Hey Spring, this contains business logic!"special instructions or labels you put on your code to tell Spring (and Java) how to handle that class or method.
+
 ## **Standard Spring Boot Project Layout**
 
 ```
@@ -72,6 +80,7 @@ public class LsApplication {
 ---
 
 ### 📱 **PRESENTATION LAYER** (Controller)
+**Controllers are the API-fication (love that term!) of your services.**
 
 #### `ProjectController.java` - HTTP Request Handler
 **Purpose:** Receives HTTP requests and returns HTTP responses
