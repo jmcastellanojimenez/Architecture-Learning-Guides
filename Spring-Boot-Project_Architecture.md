@@ -7,25 +7,74 @@
 ```
 🏗️ CLASS (General concept)
 ├── 📋 Interface Class = "Promise class" (no implementation)
-│   └── 📄 IProjectService.java
-└── 🔨 Implementation Class = "Working class" (with actual code)
-    └── 📄 ProjectServiceImpl.java
+│   └── 📄 IProjectService.java (when needed)
+├── 🔨 Implementation Class = "Working class" (with actual code)
+│   └── 📄 ProjectServiceImpl.java (when interface exists)
+└── 🎯 Regular Class = "Standalone working class" (most common)
+    └── 📄 ProjectController.java, Project.java, LsApplication.java
 
-💾 OBJECT = Instance created from implementation classes at runtime
+💾 OBJECT = Instance created from implementation or regular classes at runtime
 ```
+
+### **🔄 OOP Concepts Explained:**
 
 **Interface** = "I'm a SPECIAL TYPE OF CLASS that only makes promises"
 - `📄 IProjectService.java` - Contract with method signatures only
+- **When to use:** Multiple implementations, testing, loose coupling
 
-**Implementation** = "I'm a REGULAR CLASS that fulfills those promises"  
+**Implementation** = "I'm a REGULAR CLASS that fulfills interface promises"  
 - `📄 ProjectServiceImpl.java` - Actual working code that implements the interface
+- **When to use:** When you have an interface to implement
 
-**Class** = "I'm the general concept - both interfaces and implementations are types of me"
+**Regular Class** = "I'm a STANDALONE CLASS that doesn't need an interface"
 - `📄 Project.java` (Entity), `📄 ProjectController.java`, `📄 LsApplication.java`
+- **When to use:** Most cases - entities, controllers, main classes, configs
 
-**Object** = "I'm created from implementation classes at runtime (not from interface classes)"
-- Spring creates: `projectService = new ProjectServiceImpl()`
+**Object** = "I'm created from implementation or regular classes at runtime"
+- Spring creates: `projectService = new ProjectServiceImpl()` or `new ProjectController()`
 - You CANNOT do: `new IProjectService()` ❌
+
+---
+
+### **🎯 Interface Usage Patterns:**
+
+#### **✅ Common to Have Interfaces:**
+```
+📁 service/
+├── IProjectService.java        # Interface ✅
+└── impl/ProjectServiceImpl.java # Implementation ✅
+
+📁 repository/  
+├── IProjectRepository.java     # Interface ✅
+└── impl/ProjectRepositoryImpl.java # Implementation ✅
+```
+
+#### **❌ Usually NO Interfaces:**
+```
+📁 model/
+└── Project.java                 # Just a class, no interface needed
+
+📁 controller/
+└── ProjectController.java       # Just a class, no interface needed
+
+🚀 LsApplication.java            # Just a class, no interface needed
+```
+
+#### **🤔 When to Use Interfaces:**
+
+**✅ USE Interface When:**
+- **Multiple implementations possible** (DatabaseService vs FileService)
+- **Easy testing needed** (MockService for unit tests)
+- **Loose coupling wanted** (don't depend on specific implementation)
+- **Business logic layer** (services often have interfaces)
+- **Data access layer** (repositories often have interfaces)
+
+**❌ DON'T Need Interface When:**
+- **Only one implementation** (most controllers, entities)
+- **Simple data classes** (models/entities)
+- **Main application class** (LsApplication)
+- **Configuration classes**
+- **Utility classes**
 
 ---
 
