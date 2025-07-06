@@ -1,4 +1,4 @@
-# 📁 Complete Spring Boot Directory Guide with OOP Concepts
+# 📁 Complete Spring Boot Project Structure
 
 ## 🏗️ **Complete Project Structure**
 
@@ -212,11 +212,11 @@ When your app starts, Spring creates **Objects** from your **Classes**:
 ## 🚀 **Missing Files You Might Need to Create**
 
 ```
-📁 dto/                                  # Data Transfer Objects
+📁 dto/                                 # Data Transfer Objects
 ├── CreateProjectRequest.java           # Class - Request wrapper
 └── ProjectResponse.java                # Class - Response wrapper
 
-📁 exception/                            # Custom exceptions
+📁 exception/                           # Custom exceptions
 ├── ProjectNotFoundException.java       # Class - Custom exception
 └── GlobalExceptionHandler.java         # Class - Error handler
 
@@ -246,80 +246,3 @@ HTTP Request → ProjectController → ProjectService → ProjectRepository → 
 ```
 
 ---
-
-## 🏷️ **Annotations**
-
-Those `@` symbols are **annotations** - they're like special instructions or labels you put on your code to tell Spring (and Java) how to handle that class or method:
-
-- `@SpringBootApplication` = "Hey Spring, this is where you start the app!"
-- `@Controller` = "Hey Spring, this handles web requests!"
-- `@Service` = "Hey Spring, this contains business logic!"
-- `@Repository` = "Hey Spring, this handles database stuff!"
-- `@Entity` = "Hey Spring, this represents a database table!"
-- `@Autowired` = "Hey Spring, inject the dependency here!"
-
-Think of annotations as **sticky notes with instructions** that Spring reads to automatically configure your application!
-
----
-
-## 🎯 **Java OOP Fundamentals + Spring Boot Directory Mapping**
-
-**Interface** and **Implementation** are **TYPES** of **Classes**!
-
-```
-🏗️ CLASS (General concept)
-├── 📋 Interface Class = "Promise class" (no implementation)
-│   └── 📄 IProjectService.java (when needed)
-├── 🔨 Implementation Class = "Working class" (with actual code)
-│   └── 📄 ProjectServiceImpl.java (when interface exists)
-└── 🎯 Regular Class = "Standalone working class" (most common)
-    └── 📄 ProjectController.java, Project.java, LsApplication.java
-
-💾 OBJECT = Instance created from implementation or regular classes at runtime
-```
-
-### **🔄 OOP Concepts Explained:**
-
-**Interface** = "I'm a SPECIAL TYPE OF CLASS that only makes promises"
-- `📄 IProjectService.java` - Contract with method signatures only
-- **When to use:** Multiple implementations, testing, loose coupling
-
-**Implementation** = "I'm a REGULAR CLASS that fulfills interface promises"  
-- `📄 ProjectServiceImpl.java` - Actual working code that implements the interface
-- **When to use:** When you have an interface to implement
-
-**Regular Class** = "I'm a STANDALONE CLASS that doesn't need an interface"
-- `📄 Project.java` (Entity), `📄 ProjectController.java`, `📄 LsApplication.java`
-- **When to use:** Most cases - entities, controllers, main classes, configs
-
-**Object** = "I'm created from implementation or regular classes at runtime"
-- Spring creates: `projectService = new ProjectServiceImpl()` or `new ProjectController()`
-- You CANNOT do: `new IProjectService()` ❌
-
----
-
-### **🎯 Interface Usage Patterns:**
-
-#### **✅ Common to Have Interfaces:**
-```
-📁 service/
-├── IProjectService.java        # Interface ✅
-└── impl/ProjectServiceImpl.java # Implementation ✅
-
-📁 repository/  
-├── IProjectRepository.java     # Interface ✅
-└── impl/ProjectRepositoryImpl.java # Implementation ✅
-```
-
-#### **❌ Usually NO Interfaces:**
-```
-📁 model/
-└── Project.java                 # Just a class, no interface needed
-
-📁 controller/
-└── ProjectController.java       # Just a class, no interface needed
-
-🚀 LsApplication.java            # Just a class, no interface needed
-```
-
-This structure gives you a complete, organized Spring Boot application following OOP principles!
