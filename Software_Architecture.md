@@ -1,4 +1,4 @@
-# Complete Software Architecture Learning Guide
+# Complete Software Architecture learning guide
 *From Beginner to Architect*
 
 ## Table of Contents
