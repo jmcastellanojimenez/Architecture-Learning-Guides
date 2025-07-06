@@ -275,6 +275,11 @@ public class ProjectServiceImpl implements IProjectService {
 ---
 
 ### 💾 **PERSISTENCE LAYER** (Repository & Model)
+YES, exactly! The Persistence Layer is ALL the database stuff!
+Model classes are your table blueprints (@Entity = "this becomes a database table").
+Repository classes are your database toolbox (@Repository = "save, find, delete, update operations"), so basically:
+Model = "what data looks like" and Repository = "how to get/put that data".
+
 
 #### `model/Project.java` - Data Model
 **Purpose:** Represents the data structure and maps to database table
