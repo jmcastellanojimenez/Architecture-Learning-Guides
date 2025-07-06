@@ -60,22 +60,6 @@
 🚀 LsApplication.java            # Just a class, no interface needed
 ```
 
-#### **🤔 When to Use Interfaces:**
-
-**✅ USE Interface When:**
-- **Multiple implementations possible** (DatabaseService vs FileService)
-- **Easy testing needed** (MockService for unit tests)
-- **Loose coupling wanted** (don't depend on specific implementation)
-- **Business logic layer** (services often have interfaces)
-- **Data access layer** (repositories often have interfaces)
-
-**❌ DON'T Need Interface When:**
-- **Only one implementation** (most controllers, entities)
-- **Simple data classes** (models/entities)
-- **Main application class** (LsApplication)
-- **Configuration classes**
-- **Utility classes**
-
 ---
 
 ## Annotations
