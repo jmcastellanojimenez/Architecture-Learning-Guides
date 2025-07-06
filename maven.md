@@ -1,4 +1,4 @@
-# Maven Quick Reference Guide
+# Maven quick reference guide
 
 ## What is Maven?
 Maven is a build automation and project management tool for Java projects. It uses XML configuration files (pom.xml) to manage dependencies, build processes, and project structure.
