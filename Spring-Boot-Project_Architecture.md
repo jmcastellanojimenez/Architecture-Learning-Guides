@@ -62,14 +62,6 @@
 
 ---
 
-## Annotations
-Those @ symbols are annotations - they're like special instructions or labels you put on your code to tell Spring (and Java) how to handle that class or method:
-- @SpringBootApplication = "Hey Spring, this is where you start the app!"
-- @Controller = "Hey Spring, this handles web requests!"
-- @Service = "Hey Spring, this contains business logic!"special instructions or labels you put on your code to tell Spring (and Java) how to handle that class or method.
-
----
-
 ## 🏗️ **Complete Project Structure**
 
 ```
