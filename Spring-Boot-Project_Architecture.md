@@ -3,8 +3,11 @@
 ## 🎯 **Java OOP Fundamentals + Spring Boot Directory Mapping**
 
 **Interface** = "I PROMISE to do these things, but I won't tell you HOW"
+
 **Implementation** = "Here's HOW I actually do those things I promised"  
+
 **Class** = "I am the TEMPLATE/BLUEPRINT that contains the actual code and data structure"
+
 **Object** = "I am the LIVING INSTANCE created from that template, with real data and running in memory"
 
 ---
