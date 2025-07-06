@@ -15,30 +15,40 @@ Those @ symbols are annotations - they're like special instructions or labels yo
 - @Controller = "Hey Spring, this handles web requests!"
 - @Service = "Hey Spring, this contains business logic!"special instructions or labels you put on your code to tell Spring (and Java) how to handle that class or method.
 
-## **Standard Spring Boot Project Layout**
+## 🏗️ **Complete Project Structure**
 
 ```
 task-management-app-lesson/
 ├── src/main/java/com/baeldung/
-│   ├── 🚀 LsApplication.java                   # ✅ Main starter class
+│   ├── 🚀 LsApplication.java                   # ✅ Class (Main) - App starter
 │   │
 │   ├── 📱 controller/                          # PRESENTATION LAYER
-│   │   └── ProjectController.java              # Handles HTTP requests
+│   │   └── ProjectController.java              # ✅ Class - HTTP request handler
 │   │
-│   ├── 🧠 service/                             # ✅ BUSINESS LOGIC LAYER  
-│   │   ├── IProjectService.java                # ✅ Interface (contract)
-│   │   └── impl/ProjectServiceImpl.java        # ✅ Implementation (actual logic)
+│   ├── 🧠 service/                             # BUSINESS LOGIC LAYER  
+│   │   ├── IProjectService.java                # ✅ Interface - Business contract
+│   │   └── impl/ProjectServiceImpl.java        # ✅ Implementation - Business logic
 │   │
-│   └── 💾 persistence/                          # ✅ PERSISTENCE LAYER
-│       ├── model/Project.java                   # ✅ Data model (properties)
+│   └── 💾 persistence/                          # PERSISTENCE LAYER
+│       ├── model/Project.java                   # ✅ Class (Entity) - Data structure
 │       └── repository/
-│           ├── IProjectRepository.java          # ✅ Interface (contract) 
-│           └── impl/ProjectRepositoryImpl.java  # ✅ Implementation (database code)
+│           ├── IProjectRepository.java          # ✅ Interface - Data access contract
+│           └── impl/ProjectRepositoryImpl.java  # ✅ Implementation - Database code
 │
 ├── src/main/resources/
-│   └── application.properties                   # Configuration
+│   ├── 📄 application.properties               # Configuration file
+│   ├── 📁 static/                              # CSS, JS, images (web files)
+│   └── 📁 templates/                           # HTML templates
 │
-└── pom.xml                                      # Dependencies
+├── 📁 target/                                  # 🔨 BUILD OUTPUT (generated)
+│   ├── classes/                                # Compiled .class files
+│   ├── generated-sources/                      # Auto-generated code
+│   └── task-management-app.jar                 # Final executable
+│
+├── 📄 pom.xml                                  # Maven dependencies & config
+├── 📄 mvnw / mvnw.cmd                         # Maven wrapper scripts
+├── 📄 .gitignore                              # Git ignore rules
+└── 📄 HELP.md                                 # Documentation
 ```
 
 ## 🔄 **How Layers Connect**
