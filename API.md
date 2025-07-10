@@ -31,6 +31,8 @@ REST API (HTTP API + REST principles)
 
 **REST APIs** are a specialized type of HTTP API that follows REST architectural principles, using HTTP methods semantically and structuring URLs as resources.
 
+**REST (Representational State Transfer)** is a software architectural style that defines a set of constraints for creating web services. The core principles of REST include client-server architecture, statelessness, cacheability, a uniform interface, a layered system and code on demand. These principles promote flexibility, scalability and maintainability in web service design.
+
 ### Key Terminology
 - **Endpoint**: A specific URL where an API can be accessed
 - **Resource**: A data entity that can be accessed via the API
