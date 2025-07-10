@@ -1,4 +1,4 @@
-# Complete API Guide: Foundations to Implementation
+# Complete API Guide: Foundations to Implementation + Spring Boot's REST Magic
 
 ## Table of Contents
 1. [Understanding the API Ecosystem](#understanding-the-api-ecosystem)
