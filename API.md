@@ -33,6 +33,8 @@ REST API (HTTP API + REST principles)
 
 **REST (Representational State Transfer)** is a software architectural style that defines a set of constraints for creating web services. The core principles of REST include client-server architecture, statelessness, cacheability, a uniform interface, a layered system and code on demand. These principles promote flexibility, scalability and maintainability in web service design.
 
+**Restful** generally describes something that provides rest, peace, or relaxation. In the context of APIs, "RESTful" refers to a style of software architecture that uses a set of constraints to design networked applications, particularly web services. RESTful APIs are designed to be scalable, simple and interoperable, often using standard HTTP methods like GET, POST, PUT and DELETE. 
+
 ### Key Terminology
 - **Endpoint**: A specific URL where an API can be accessed
 - **Resource**: A data entity that can be accessed via the API
