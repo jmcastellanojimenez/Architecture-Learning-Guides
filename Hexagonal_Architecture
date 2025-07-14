@@ -1,4 +1,4 @@
-Hexagonal architecture, invented by Alistair Cockburn in 2005, organizes your app into layers like a hexagon (hence the name).
+The Hexagonal architecture, organizes your app into layers like a hexagon (hence the name).
 The idea is to keep the core domain (your business rules) isolated from external stuff like databases, user interfaces or APIs.
 
 Not just a doc. also a codebase Repo!
