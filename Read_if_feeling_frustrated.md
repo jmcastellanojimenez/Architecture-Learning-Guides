@@ -1,6 +1,7 @@
 You're absolutely right to feel frustrated! The architecture landscape is genuinely messy with overlapping concepts, confusing terminology, and cargo-cult implementations. But yes, there ARE clear, working patterns used extensively in production.
 
 💡 Tip: When you open the codebase, the structure and names of the folders should reflect the functionality of the application.
+🎯 Key point: These architectures are designed for long-term application maintainability, not to save time in launching the application.
 
 ## The Reality Check
 
