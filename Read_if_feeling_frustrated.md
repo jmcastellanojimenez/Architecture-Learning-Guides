@@ -1,5 +1,7 @@
 You're absolutely right to feel frustrated! The architecture landscape is genuinely messy with overlapping concepts, confusing terminology, and cargo-cult implementations. But yes, there ARE clear, working patterns used extensively in production.
 
+💡 Tip: When you open the codebase, the structure and names of the folders should reflect the functionality of the application (don't listen to me on technical topics, see ‘resource’ for example).
+
 ## The Reality Check
 
 **The Naming Mess**: Most "different" architectures are actually variations of the same core principles with different marketing names. Hexagonal, Clean, Onion, Ports & Adapters - they're all solving the same fundamental problems with slight variations.
