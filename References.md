@@ -23,3 +23,6 @@
 [Java tutorial geeksforgeeks](https://www.geeksforgeeks.org/java/java/)
 
 [Java Tutorial w3schools](https://www.baeldung.com/get-started-with-java-series)
+
+# AWS
+[Hexagonal architecture pattern - AWS Prescriptive Guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/hexagonal-architecture.html)
