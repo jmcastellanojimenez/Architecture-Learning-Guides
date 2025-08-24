@@ -20,9 +20,9 @@ The most successful modern applications tend to follow this simple, battle-teste
 ├─────────────────────────────────────┤
 │        Application Services         │  ← Coordinate business operations
 ├─────────────────────────────────────┤
-│          Domain Logic              │  ← Business rules and entities  
+│          Domain Logic               │  ← Business rules and entities  
 ├─────────────────────────────────────┤
-│         Infrastructure             │  ← Database, external APIs, etc.
+│         Infrastructure              │  ← Database, external APIs, etc.
 └─────────────────────────────────────┘
 ```
 
