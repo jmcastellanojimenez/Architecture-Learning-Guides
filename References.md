@@ -9,8 +9,7 @@
 
 [Microservices](https://microservices.io)
 
-[DDD](https://ddd.academy)
-
+[Paper: Domain-Driven Design Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf)
 
 # Cloud
 [Cloud Native Landscape](https://landscape.cncf.io/)
