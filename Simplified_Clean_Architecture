@@ -1,0 +1,462 @@
+🔥 2-Layer Approach - Pure Separation of Concerns
+
+💡 CORE PRINCIPLE:
+
+   "Keep business logic pure and separate from infrastructure.
+    Everything else is implementation detail."
+
+🎯 SIMPLICITY OVER PURITY:
+   Focus on the separation of concerns principle
+   rather than following architectural dogma.
+
+╔══════════════════════════════════════════════════════════════════╗
+║              🧹 SIMPLIFIED CLEAN ARCHITECTURE                    ║
+║                    (Infrastructure + Domain)                     ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📋 ARCHITECTURE LAYERS
+┌─────────────────────────────────────────────────────────────────────┐
+│                   🔧 INFRASTRUCTURE LAYER                           │
+│                        (Everything External)                        │
+├─────────────────────────────────────────────────────────────────────┤
+│ 📡 PRESENTATION        🗄️ PERSISTENCE         🌐 EXTERNAL            │
+│ • Controllers          • Database Adapters    • APIs                │
+│ • Request/Response     • Repository Impls     • Message Queues      │
+│ • View Models          • Query Builders       • File Systems        │
+│ • Error Handlers       • Migrations          • Email Services       │
+│                                                                     │
+│ ⚙️ ORCHESTRATION       🔄 COORDINATION        🎯 WORKFLOWS           │
+│ • Use Cases            • Transaction Mgmt     • Command Handlers    │
+│ • Application Srvcs    • Event Publishing     • Query Handlers      │
+│ • DTOs Mapping         • Cache Management     • Background Jobs     │
+│ • Input Validation     • Security            • Scheduling           │
+└─────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     💎 DOMAIN LAYER                                 │
+│                    (Pure Business Logic)                            │
+├─────────────────────────────────────────────────────────────────────┤
+│ 🏛️ ENTITIES            📦 VALUE OBJECTS      🎯 DOMAIN SERVICES      │
+│ • User                 • Email               • PriceCalculator      │
+│ • Order                • Money               • InventoryService     │
+│ • Product              • UserId              • ValidationService    │
+│ • Payment              • DateRange           • DiscountCalculator   │
+│                                                                     │
+│ 🔌 PORTS               📡 DOMAIN EVENTS      📏 BUSINESS RULES       │
+│ • Repository Intfs     • UserRegistered      • Order Validation     │
+│ • Service Intfs        • OrderPlaced         • Price Calculation    │
+│ • Gateway Intfs        • PaymentProcessed    • Stock Management     │
+│ • Publisher Intfs      • ProductPublished    • User Authorization   │
+└─────────────────────────────────────────────────────────────────────┘
+
+🎯 CORE PRINCIPLE
+╔═══════════════════════════════════════════════════════════════════╗
+║                    🎯 THE GOLDEN RULE                             ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║                SEPARATE BUSINESS FROM INFRASTRUCTURE               ║
+║                                                                   ║
+║   🔧 INFRASTRUCTURE        ───────▶        💎 DOMAIN              ║
+║   (Changes frequently)                     (Stable business)       ║
+║                                                                   ║
+║   • Technology decisions                   • Business rules       ║
+║   • External dependencies                  • Core entities        ║
+║   • Framework specifics                    • Value objects        ║
+║   • Database schemas                       • Domain logic         ║
+║   • API protocols                          • Validation rules     ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+🔄 REQUEST FLOW
+
+🌐 HTTP Request
+    │
+    ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ 📡 CONTROLLER   │───▶│ ⚙️ USE CASE     │───▶│ 💎 DOMAIN       │
+│ (Infrastructure)│    │ (Infrastructure)│    │   ENTITY        │
+│                 │    │                 │    │                 │
+│ • HTTP Mapping  │    │ • Orchestration │    │ • Business      │
+│ • Validation    │    │ • Coordination  │    │   Rules         │
+│ • Error Handling│    │ • Transaction   │    │ • Validation    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+    ▲                         │                       │
+    │                         ▼                       ▼
+    │                ┌─────────────────┐    ┌─────────────────┐
+    │                │ 📡 EVENT        │    │ 🗄️ REPOSITORY   │
+    │                │   PUBLISHER     │    │   PORT          │
+    │                │ (Infrastructure)│    │ (Domain)        │
+    └────────────────│ • Domain Events │    │ • Data Access   │
+    📤 HTTP Response │ • Notifications │    │ • Persistence   │
+                     └─────────────────┘    └─────────────────┘
+                              │                       │
+                              ▼                       ▼
+                     ┌─────────────────┐    ┌─────────────────┐
+                     │ 📨 MESSAGE      │    │ 🗄️ DATABASE     │
+                     │   QUEUE         │    │   ADAPTER       │
+                     │ (Infrastructure)│    │ (Infrastructure)│
+                     │ • RabbitMQ      │    │ • MySQL         │
+                     │ • Kafka         │    │ • PostgreSQL    │
+                     │ • Redis         │    │ • MongoDB       │
+                     └─────────────────┘    └─────────────────┘
+
+🏗️ INFRASTRUCTURE ORGANIZATION
+╔════════════════════════════════════════════════════════════════╗
+║                🔧 INFRASTRUCTURE LAYER BREAKDOWN               ║
+╠════════════════════════════════════════════════════════════════╣
+║                                                                ║
+║  📁 /infrastructure                                            ║
+║  ├── 📁 /web                    (HTTP Layer)                   ║
+║  │   ├── 📄 UserController      • Request handling             ║
+║  │   ├── 📄 OrderController     • Response formatting          ║
+║  │   ├── 📄 ErrorHandler        • HTTP status codes            ║
+║  │   └── 📄 Middleware          • Authentication               ║
+║  │                                                             ║
+║  ├── 📁 /usecases               (Orchestration)                ║
+║  │   ├── 📄 RegisterUser        • Business workflow            ║
+║  │   ├── 📄 CreateOrder         • Transaction coordination     ║
+║  │   ├── 📄 ProcessPayment      • External service calls       ║
+║  │   └── 📄 SendNotification    • Event publishing             ║
+║  │                                                             ║
+║  ├── 📁 /persistence            (Data Layer)                   ║
+║  │   ├── 📄 MySqlUserRepo       • Database operations          ║
+║  │   ├── 📄 RedisCache          • Caching logic                ║
+║  │   ├── 📄 FileStorage         • File operations              ║
+║  │   └── 📄 QueryBuilder        • Query construction           ║
+║  │                                                             ║
+║  ├── 📁 /external               (External Services)            ║
+║  │   ├── 📄 PaymentGateway      • Payment processing           ║
+║  │   ├── 📄 EmailService        • Email sending                ║
+║  │   ├── 📄 NotificationAPI     • Push notifications           ║
+║  │   └── 📄 FileUploadService   • File management              ║
+║  │                                                             ║
+║  └── 📁 /messaging              (Event Handling)               ║
+║      ├── 📄 RabbitMQPublisher   • Event publishing             ║
+║      ├── 📄 EventSubscriber     • Event handling               ║
+║      └── 📄 MessageMapper       • Message transformation       ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+💎 DOMAIN LAYER ORGANIZATION
+╔═════════════════════════════════════════════════════════════════╗
+║                   💎 DOMAIN LAYER BREAKDOWN                      ║
+╠═════════════════════════════════════════════════════════════════╣
+║                                                                 ║
+║  📁 /domain                                                     ║
+║  ├── 📁 /entities               (Core Business Objects)          ║
+║  │   ├── 📄 User                • Identity + behavior            ║
+║  │   ├── 📄 Order               • Business entity                ║
+║  │   ├── 📄 Product             • Domain model                   ║
+║  │   └── 📄 Payment             • Business logic                 ║
+║  │                                                               ║
+║  ├── 📁 /valueobjects           (Immutable Values)               ║
+║  │   ├── 📄 Email               • Validation + formatting        ║
+║  │   ├── 📄 Money               • Currency + amount              ║
+║  │   ├── 📄 UserId              • Type safety                    ║
+║  │   └── 📄 DateRange           • Period validation              ║
+║  │                                                               ║
+║  ├── 📁 /services               (Domain Logic)                   ║
+║  │   ├── 📄 PriceCalculator     • Business calculations          ║
+║  │   ├── 📄 InventoryService    • Stock management               ║
+║  │   ├── 📄 ValidationService   • Business rules                 ║
+║  │   └── 📄 DiscountCalculator  • Pricing logic                  ║
+║  │                                                               ║
+║  ├── 📁 /ports                  (Interfaces)                     ║
+║  │   ├── 📄 UserRepository      • Data access contract           ║
+║  │   ├── 📄 PaymentGateway      • Payment contract               ║
+║  │   ├── 📄 EmailService        • Communication contract         ║
+║  │   └── 📄 EventPublisher      • Event contract                 ║
+║  │                                                               ║
+║  ├── 📁 /events                 (Domain Events)                  ║
+║  │   ├── 📄 UserRegistered      • Business event                 ║
+║  │   ├── 📄 OrderPlaced         • Domain notification            ║
+║  │   ├── 📄 PaymentProcessed    • Business trigger               ║
+║  │   └── 📄 ProductPublished    • Domain change                  ║
+║  │                                                               ║
+║  └── 📁 /exceptions             (Domain Errors)                  ║
+║      ├── 📄 InvalidEmail        • Business rule violation        ║
+║      ├── 📄 InsufficientStock   • Domain constraint              ║
+║      └── 📄 UserNotFound        • Entity not found               ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+🔌 PORTS & ADAPTERS IN 2-LAYER
+┌───────────────────────────────────────────────────────────────────┐
+│                        🔌 PORTS PATTERN                            │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  💎 DOMAIN PORTS (Interfaces)                                     │
+│  ┌──────────────────────────────────────────────────── ────────┐  │
+│  │  interface UserRepository {                                 │  │
+│  │    save(user: User): Promise<void>                          │  │
+│  │    findById(id: UserId): Promise<User>                      │  │
+│  │    findByEmail(email: Email): Promise<User>                 │  │
+│  │  }                                                          │  │
+│  │                                                             │  │
+│  │  interface PaymentGateway {                                 │  │
+│  │    processPayment(amount: Money): Promise<PaymentResult>    │  │
+│  │    refund(transactionId: string): Promise<void>             │  │
+│  │  }                                                          │  │
+│  └─────────────────────────────────────────────────────────────┘  │
+│                                                                   │
+│  🔧 INFRASTRUCTURE ADAPTERS (Implementations)                     │
+│  ┌─────────────────────────────────────────────────────────────┐  │
+│  │  class MySqlUserRepository implements UserRepository {      │  │
+│  │    async save(user: User): Promise<void> {                  │  │
+│  │      // MySQL-specific implementation                       │  │
+│  │    }                                                        │  │
+│  │  }                                                          │  │
+│  │                                                             │  │
+│  │  class StripePaymentGateway implements PaymentGateway {     │  │
+│  │    async processPayment(amount: Money): Promise<Result> {   │  │
+│  │      // Stripe API implementation                           │  │
+│  │    }                                                        │  │
+│  │  }                                                          │  │
+│  └─────────────────────────────────────────────────────────────┘  │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+
+
+⚙️ USE CASES IN INFRASTRUCTURE
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ⚙️ USE CASE IMPLEMENTATION                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  🔧 RegisterUserUseCase (Infrastructure Layer)                       │
+│  ┌────────────────────────────────────────────────────────────────┐  │
+│  │  class RegisterUserUseCase {                                   │  │
+│  │    constructor(                                                │  │
+│  │      private userRepo: UserRepository,                         │  │
+│  │      private emailService: EmailService,                       │  │
+│  │      private eventPublisher: EventPublisher                    │  │
+│  │    ) {}                                                        │  │
+│  │                                                                │  │
+│  │    async execute(request: RegisterUserRequest): Promise<void> {│  │
+│  │      // 1. 🏗️ Infrastructure: Input validation                 │  │
+│  │      this.validateInput(request);                              │  │
+│  │                                                                │  │
+│  │      // 2. 💎 Domain: Create user entity                       │  │
+│  │      const user = User.create(                                 │  │
+│  │        Email.fromString(request.email),                        │  │
+│  │        request.name                                            │  │
+│  │      );                                                        │  │
+│  │                                                                │  │
+│  │      // 3. 🔧 Infrastructure: Save to database                 │  │
+│  │      await this.userRepo.save(user);                           │  │
+│  │                                                                │  │
+│  │      // 4. 🔧 Infrastructure: Send welcome email               │  │
+│  │      await this.emailService.sendWelcome(user.email);          │  │
+│  │                                                                │  │
+│  │      // 5. 🔧 Infrastructure: Publish domain event             │  │
+│  │      await this.eventPublisher.publish(                        │  │
+│  │        new UserRegistered(user.id, user.email)                 │  │
+│  │      );                                                        │  │
+│  │    }                                                           │  │
+│  │  }                                                             │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+🧪 TESTING STRATEGY
+╔═══════════════════════════════════════════════════════════════════╗
+║                       🧪 TESTING APPROACH                         ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║                    🎭 ACCEPTANCE TESTS                            ║
+║              ┌─────────────────────────────────────┐              ║
+║              │           END-TO-END                │              ║
+║              │ • Complete user flows               │              ║
+║              │ • API integration tests             │              ║
+║              │ • Database + external services      │              ║
+║              └─────────────────────────────────────┘              ║
+║                                                                   ║
+║            🔗 INTEGRATION TESTS                                   ║
+║       ┌─────────────────────────────────────────────────┐        ║
+║       │              INFRASTRUCTURE                     │        ║
+║       │ • Repository implementations                    │        ║
+║       │ • External service adapters                     │        ║
+║       │ • Database operations                           │        ║
+║       │ • Message queue publishing                      │        ║
+║       └─────────────────────────────────────────────────┘        ║
+║                                                                  ║
+║ ⚡ UNIT TESTS                                                    ║
+║ ┌────────────────────────────────────────────────────────────┐   ║
+║ │                    DOMAIN FOCUSED                          │   ║
+║ │ • Business logic validation                                │   ║
+║ │ • Entity behavior                                          │   ║
+║ │ • Value object validation                                  │   ║
+║ │ • Domain service algorithms                                │   ║
+║ │ • Business rule enforcement                                │   ║
+║ └────────────────────────────────────────────────────────────┘   ║
+║                                                                  ║
+║ 🎯 USE CASE TESTS                                                ║
+║ ┌─────────────────────────────────────────────────────────────┐  ║
+║ │                 ORCHESTRATION LOGIC                         │  ║
+║ │ • Mock all dependencies                                     │  ║
+║ │ • Test coordination flow                                    │  ║
+║ │ • Verify all calls made                                     │  ║
+║ │ • Test error scenarios                                      │  ║
+║ └─────────────────────────────────────────────────────────────┘  ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📊 LAYER TESTING BREAKDOWN
+┌─────────────────┬─────────────────┬─────────────────┬─────────────────┐
+│      COMPONENT  │   UNIT TESTS    │ INTEGRATION     │   ACCEPTANCE    │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────┤
+│ 💎 Domain       │       ✅         │       ❌         │       ✅        │ 
+│   Entities      │    Isolated     │       N/A       │   With System   │
+│                 │                 │                 │                 │
+│ 💎 Domain       │       ✅         │       ❌         │       ✅        │
+│   Services      │    Mocked       │       N/A       │   Real Data     │
+│                 │                 │                 │                 │
+│ 🔧 Use Cases    │       ✅         │       ❌        │       ✅         │
+│   (Infra).      │  All Mocked     │       N/A       │   Real Flow     │
+│                 │                 │                 │                 │
+│ 🔧 Repositories │       ❌         │       ✅        │       ✅         │
+│   (Infra).      │      N/A        │   Real DB       │   With System   │
+│                 │                 │                 │                 │
+│ 🔧 Controllers  │       ❌         │       ✅        │       ✅         │
+│   (Infra).      │      N/A        │   HTTP Layer    │   Full Stack    │
+└─────────────────┴─────────────────┴─────────────────┴─────────────────┘
+
+⚔️ VS 3-LAYER HEXAGONAL
+┌─────────────────────────────────────────────────────────────────────┐
+│                    🆚 COMPARISON OVERVIEW                            │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│ 🔥 2-LAYER APPROACH         vs       🔷 3-LAYER HEXAGONAL            │
+│                                                                     │
+│ ✅ PROS:                                                            │
+│ • Simpler mental model                • Clear separation            │
+│ • Fewer directories                    • Dedicated orchestration    │
+│ • Less cognitive overhead              • Industry standard          │
+│ • Faster to implement                  • Better for complex flows   │
+│ • Focus on core principle              • Easier to test use cases   │
+│ • Good for small teams                 • Scales better              │
+│                                                                     │
+│ ❌ CONS:                                                             │
+│ • Mixed responsibilities               • More layers to manage      │
+│ • Use cases in infrastructure          • Can be over-engineered     │
+│ • Less "pure" separation               • Cognitive overhead         │
+│ • May grow complex over time           • Extra abstraction          │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+🎯 WHEN TO USE 2-LAYER
+
+✅ CHOOSE 2-LAYER APPROACH WHEN:
+┌─────────────────────────────────────────────────────────────────────┐
+│ 🔰 Team is learning clean architecture principles                   │
+│ 🚀 Building simple to medium complexity applications                │
+│ ⚡ Need to deliver quickly with less overhead                       │
+│ 👥 Small team that wants to minimize complexity                     │
+│ 🎯 Use cases are straightforward (mostly CRUD)                      │
+│ 📦 Building microservices with single responsibility                │
+│ 🛠️ Want to focus on business vs infrastructure separation           │
+│ 💡 Team prefers pragmatic over purist approach                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+❌ AVOID 2-LAYER APPROACH WHEN:
+┌─────────────────────────────────────────────────────────────────────┐
+│ 🏢 Building complex enterprise applications                          │
+│ 🔄 Complex orchestration across multiple aggregates                  │
+│ 📚 Team wants to follow "official" architectural patterns            │
+│ 🎭 Need clear separation of coordination logic                       │
+│ 🔀 Complex transaction management across services                    │
+│ 📈 Application expected to grow significantly in complexity          │
+└─────────────────────────────────────────────────────────────────────┘
+
+💡 IMPLEMENTATION GUIDELINES
+╔═══════════════════════════════════════════════════════════════════╗
+║                    🛠️ IMPLEMENTATION TIPS                         ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║ 🎯 KEEP USE CASES THIN:                                           ║
+║ • Focus on coordination, not business logic                       ║
+║ • Delegate to domain for business rules                           ║
+║ • Handle infrastructure concerns (transactions, events)           ║
+║                                                                   ║
+║ 💎 RICH DOMAIN LAYER:                                             ║
+║ • Put business logic in entities and domain services              ║
+║ • Use value objects for validation and immutability               ║
+║ • Keep domain pure (no infrastructure dependencies)               ║
+║                                                                   ║
+║ 🔌 CLEAR PORT DEFINITIONS:                                        ║
+║ • Define interfaces in domain layer                               ║
+║ • Implement adapters in infrastructure layer                      ║
+║ • Use dependency injection for loose coupling                     ║
+║                                                                   ║
+║ 🧪 TEST STRATEGY:                                                 ║
+║ • Unit test domain logic extensively                              ║
+║ • Integration test infrastructure adapters                        ║
+║ • Mock dependencies in use case tests                             ║
+║ • End-to-end test critical user journeys                          ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+✅ IMPLEMENTATION CHECKLIST
+
+📋 STEP-BY-STEP SETUP:
+
+💎 DOMAIN LAYER SETUP:
+    ☐ Create domain entities with business logic
+    ☐ Define value objects for validation
+    ☐ Create domain services for cross-entity logic
+    ☐ Define repository and service interfaces (ports)
+    ☐ Create domain events for business notifications
+    ☐ Add domain exceptions for business rule violations
+
+🔧 INFRASTRUCTURE LAYER SETUP:
+    ☐ Implement repository adapters (database)
+    ☐ Create external service adapters (APIs, email, etc.)
+    ☐ Build HTTP controllers for API endpoints
+    ☐ Implement use cases for business workflows
+    ☐ Setup dependency injection container
+    ☐ Add error handling and logging
+    ☐ Configure database and migrations
+
+🧪 TESTING SETUP:
+    ☐ Write unit tests for domain entities
+    ☐ Add unit tests for domain services
+    ☐ Create use case tests with mocked dependencies
+    ☐ Build integration tests for repository implementations
+    ☐ Add integration tests for external service adapters
+    ☐ Create end-to-end tests for critical flows
+
+🚀 DEPLOYMENT SETUP:
+    ☐ Configure environment-specific settings
+    ☐ Setup CI/CD pipeline
+    ☐ Add monitoring and health checks
+    ☐ Configure logging and error tracking
+    ☐ Setup database connection pooling
+    ☐ Add security middleware and authentication
+
+🎯 QUICK REFERENCE
+┌─────────────────────────────────────────────────────────────────────┐
+│                       🔍 DECISION MATRIX                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│ WHERE TO PUT WHAT:                                                  │
+│                                                                     │
+│ 💎 DOMAIN LAYER:                                                    │
+│ • Business rules and validation                                     │
+│ • Entity behavior and invariants                                    │
+│ • Domain calculations and algorithms                                │
+│ • Value object creation and validation                              │
+│ • Interface definitions (ports)                                     │
+│                                                                     │
+│ 🔧 INFRASTRUCTURE LAYER:                                            │
+│ • HTTP request/response handling                                    │
+│ • Database queries and persistence                                  │
+│ • External API calls                                                │
+│ • Use case orchestration and coordination                           │
+│ • Transaction management                                            │
+│ • Event publishing and handling                                     │
+│ • Input validation and error handling                               │
+│ • Authentication and authorization                                  │
+│ • Caching and performance optimizations                             │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
