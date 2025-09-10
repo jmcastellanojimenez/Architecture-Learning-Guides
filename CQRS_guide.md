@@ -41,11 +41,6 @@ Query → Query Handler → Read Model
 
 # Comprehensive Guide
 
-# CQRS: Command Query Responsibility Segregation
-## Comprehensive Guide with Schematic Explanations
-
----
-
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Core Concepts](#core-concepts)
