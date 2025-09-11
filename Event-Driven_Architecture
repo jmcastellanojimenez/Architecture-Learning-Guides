@@ -1,0 +1,238 @@
+## 🎯 **Why Event-Driven?**
+
+### ❌ **Problem: Monolith → Microservices**
+```
+UserService ──HTTP──→ VideoService
+    ↓ If VideoService fails...
+💥 EVERYTHING CRASHES
+```
+
+### ✅ **Solution: Domain Events**
+```
+UserService ──event──→ Message Broker ──→ VideoService
+    ↓ If VideoService fails...
+😎 UserService keeps working
+```
+
+---
+
+## 🏗️ **Basic Architecture**
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  PRODUCER   │───▶│   BROKER    │───▶│  CONSUMER   │
+│ (Microservice)│   │ (RabbitMQ/  │   │(Microservice)│
+│             │    │  AWS SNS)   │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+---
+
+## 📨 **Message vs Event**
+
+### 🎭 **Event** = What happened in the domain
+```json
+{
+  "type": "video_created",
+  "data": { "videoId": "123", "userId": "456" }
+}
+```
+
+### 📦 **Message** = Container that transports the event
+```
+┌─────────────────────────────────┐
+│ MESSAGE (unit in the queue)     │
+│ ┌─────────────────────────────┐ │
+│ │ Headers: timestamp, etc     │ │
+│ │─────────────────────────────│ │
+│ │ Body: EVENT (JSON)          │ │
+│ └─────────────────────────────┘ │
+└─────────────────────────────────┘
+```
+
+---
+
+## 🛠️ **Technology Solutions**
+
+### 🐰 **RabbitMQ (AMQP)**
+```
+Producer → Exchange → Queue → Consumer
+           (Router)  (Buffer)
+```
+
+**Exchange Types:**
+- 🔊 **Fanout**: Broadcast to all queues
+- 🎯 **Direct**: Exact routing key match
+- 🔗 **Topic**: Routing key with wildcards (`video.*`)
+
+### ☁️ **AWS SNS + SQS**
+```
+Producer → SNS Topic → SQS Queue → Consumer
+           (Exchange)  (RabbitMQ Queue)
+```
+
+**Filtering:**
+```json
+{
+  "MessageAttributes": {
+    "event_type": "codelytv.video.1.event.video.published"
+  }
+}
+```
+
+### 🌊 **Kafka/Kinesis = Streaming**
+```
+❌ NO for domain events
+✅ YES for data streams (logs, analytics)
+```
+
+---
+
+## 🎨 **Naming Conventions**
+
+### 📋 **Routing Key (AsyncAPI)**
+```
+codelytv.video.1.event.video.published
+│       │     │ │     │     │
+│       │     │ │     │     └─ Event (past tense)
+│       │     │ │     └─ Entity
+│       │     │ └─ Type (event/command)
+│       │     └─ Version
+│       └─ Bounded Context
+└─ Company
+```
+
+### 🏷️ **Queue Name**
+```
+user.notification.notify_user_on_video_published
+│    │           │                │
+│    │           │                └─ Trigger event
+│    │           └─ Action
+│    └─ Entity
+└─ Service
+```
+
+---
+
+## ⚠️ **Error Management**
+
+### 🔄 **Out-of-Order Events**
+
+**Problem:**
+```
+Correct order: 1.conversation_created → 2.message_sent
+Received order: 1.message_sent → 2.conversation_created ❌
+```
+
+**Solutions:**
+1. **Re-queue with counter**: ACK + manual requeue
+2. **NACK**: Don't confirm, let RabbitMQ retry
+
+### 📬 **Duplicate Events**
+
+| Solution | What it does |
+|----------|--------------|
+| **Let it crash** 💥 | Error → Dead Letter Queue |
+| **Deduplication** 📝 | Store processed IDs in DB |
+| **Idempotency** 👐 | Safe operations (UPSERT vs INSERT) |
+
+---
+
+## 🔧 **Circuit Breaker**
+
+### 🚨 **States**
+```
+CLOSED ────error rate high────→ OPEN
+   ↑                               │
+   │                               │ (timeout)
+   │                               ↓
+   └────success rate OK──── HALF-OPEN
+```
+
+**Tools:**
+- **Hystrix** (deprecated)
+- **Resilience4j** ⭐ (recommended)
+- **Service Mesh** (Istio, Linkerd)
+
+---
+
+## 📊 **Quick Comparison**
+
+### 🎯 **For Domain Events**
+| Tool | Fan-out | DLQ | Complexity | Use Case |
+|------|---------|-----|------------|----------|
+| **RabbitMQ** | ✅ Easy | ✅ Built-in | 🟡 Medium | Microservices |
+| **SNS+SQS** | ✅ Easy | ✅ Built-in | 🟡 Medium | AWS Cloud |
+| **Kafka** | 🟡 Manual | 🔴 Manual | 🔴 High | Streaming |
+| **Kinesis** | 🔴 No | 🔴 No | 🔴 High | Big Data |
+
+---
+
+## 🏆 **Best Practices**
+
+### ✅ **DO**
+- **1 Exchange per microservice** (RabbitMQ)
+- **1 Queue per use case + event**
+- **Idempotent operations**
+- **Descriptive names**
+- **Versioning in routing keys**
+
+### ❌ **DON'T**
+- **Don't use Kafka for simple events**
+- **Don't ignore duplicates**
+- **Don't use sync events for critical flows**
+
+---
+
+## 🚀 **Quick Start**
+
+### 1️⃣ **Design your event**
+```json
+{
+  "data": {
+    "id": "event-uuid",
+    "type": "codelytv.video.1.event.video.published",
+    "occurred_on": "2025-09-11T14:30:00Z",
+    "attributes": {
+      "id": "video-123",
+      "user_id": "user-456"
+    }
+  }
+}
+```
+
+### 2️⃣ **Configure infrastructure**
+```yaml
+# RabbitMQ
+Exchange: codelytv.video.topic
+Queue: user.stats.increment_count_on_video_published
+Binding: codelytv.video.*.event.video.published
+```
+
+### 3️⃣ **Implement idempotent consumer**
+```java
+@EventHandler("video.published")
+public void handle(VideoPublishedEvent event) {
+    // ✅ Idempotent
+    userRepository.upsert(event.getUserId(), stats);
+    
+    // ❌ Not idempotent  
+    // userStats.increment(event.getUserId());
+}
+```
+
+---
+
+## 🎯 **TL;DR**
+
+**Event-Driven Architecture** = Decoupled microservices through asynchronous events
+
+**Golden Rule**: An event represents something that **ALREADY HAPPENED** in your domain
+
+**To get started**: RabbitMQ or AWS SNS+SQS, idempotent operations, descriptive names
+
+**Avoid**: Kafka for simple cases, non-idempotent operations, critical sync events
+
+---
+
+*📚 Based on DDD principles, SOLID, and distributed systems best practices*
