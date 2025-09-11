@@ -291,16 +291,16 @@ START BOTTOM-RIGHT: High benefit, manageable complexity
 
 ## 🎯 The "Just Getting Started" Roadmap
 
-### Phase 1: Foundation (Months 1-2)
+### Phase 1: Foundation
 1. **Clean Architecture** - Learn the layers
 2. **Hexagonal Architecture** - Learn ports and adapters
 3. **Basic DDD** - Use business language
 
-### Phase 2: Scaling (Months 3-4)
+### Phase 2: Scaling
 4. **CQRS** - When you have performance issues
 5. **Event-Driven** - When you have coupling issues
 
-### Phase 3: Advanced (Months 5+)
+### Phase 3: Advanced
 6. **Event Sourcing** - When you need audit trails and time travel
 
 ---
