@@ -80,6 +80,26 @@ Producer → SNS Topic → SQS Queue → Consumer
 }
 ```
 
+### ⚡ **AWS EventBridge**
+```
+Producer → EventBridge Bus → Targets (Lambda/SQS/HTTP)
+           (Managed Router)   (Multiple consumers)
+```
+
+**Event Patterns:**
+```json
+{
+  "detail-type": ["payment"],
+  "source": ["codelytv.video"]
+}
+```
+
+**Advantages:**
+- HTTP API Destinations (no consumer code needed)
+- Schema registry support
+- Cross-account events
+- Built-in CloudWatch integration
+
 ### 🌊 **Kafka/Kinesis = Streaming**
 ```
 ❌ NO for domain events
@@ -126,7 +146,7 @@ Received order: 1.message_sent → 2.conversation_created ❌
 
 **Solutions:**
 1. **Re-queue with counter**: ACK + manual requeue
-2. **NACK**: Don't confirm, let RabbitMQ retry
+2. **NACK**: Don't confirm, let broker retry
 
 ### 📬 **Duplicate Events**
 
@@ -135,6 +155,54 @@ Received order: 1.message_sent → 2.conversation_created ❌
 | **Let it crash** 💥 | Error → Dead Letter Queue |
 | **Deduplication** 📝 | Store processed IDs in DB |
 | **Idempotency** 👐 | Safe operations (UPSERT vs INSERT) |
+
+### 💀 **Dead Letter Queues (DLQ)**
+
+**All brokers support DLQ for failed messages:**
+
+```yaml
+RabbitMQ:
+  - x-dead-letter-exchange: dlx-exchange
+  - x-message-ttl: 300000
+
+AWS SNS+SQS:
+  - RedrivePolicy with maxReceiveCount
+  - deadLetterTargetArn
+
+AWS EventBridge:
+  - DeadLetterConfig per target
+  - SQS DLQ integration
+
+Kafka:
+  - Manual DLQ implementation
+  - Separate error topics
+```
+
+### 🔁 **Retry Strategies**
+
+**Exponential Backoff Pattern:**
+```
+Attempt 1: Immediate
+Attempt 2: 1 second
+Attempt 3: 2 seconds  
+Attempt 4: 4 seconds
+→ DLQ after max attempts
+```
+
+**Implementation by Platform:**
+```yaml
+EventBridge:
+  maximumRetryAttempts: 5
+  maximumEventAge: 3600
+
+SQS:
+  visibilityTimeoutSeconds: 30
+  maxReceiveCount: 3
+
+RabbitMQ:
+  x-max-retries: 3
+  x-retry-delay: 30000
+```
 
 ---
 
@@ -163,8 +231,17 @@ CLOSED ────error rate high────→ OPEN
 |------|---------|-----|------------|----------|
 | **RabbitMQ** | ✅ Easy | ✅ Built-in | 🟡 Medium | Microservices |
 | **SNS+SQS** | ✅ Easy | ✅ Built-in | 🟡 Medium | AWS Cloud |
+| **EventBridge** | ✅ Easy | ✅ SQS DLQ | 🟢 Low | Serverless/HTTP |
 | **Kafka** | 🟡 Manual | 🔴 Manual | 🔴 High | Streaming |
 | **Kinesis** | 🔴 No | 🔴 No | 🔴 High | Big Data |
+
+### ⚡ **Error Handling Capabilities**
+| Tool | Retry | DLQ | Ordering | Deduplication |
+|------|-------|-----|----------|---------------|
+| **RabbitMQ** | ✅ Config | ✅ Native | ✅ Per queue | 🟡 Plugin |
+| **SNS+SQS** | ✅ Config | ✅ Native | 🟡 FIFO only | ✅ Built-in |
+| **EventBridge** | ✅ Config | ✅ SQS DLQ | 🔴 No | 🔴 Manual |
+| **Kafka** | 🟡 Manual | 🟡 Manual | ✅ Per partition | ✅ Built-in |
 
 ---
 
@@ -176,11 +253,16 @@ CLOSED ────error rate high────→ OPEN
 - **Idempotent operations**
 - **Descriptive names**
 - **Versioning in routing keys**
+- **Configure Dead Letter Queues**
+- **Implement exponential backoff**
+- **Monitor DLQ accumulation**
 
 ### ❌ **DON'T**
 - **Don't use Kafka for simple events**
 - **Don't ignore duplicates**
 - **Don't use sync events for critical flows**
+- **Don't forget DLQ configuration**
+- **Don't retry indefinitely**
 
 ---
 
@@ -202,23 +284,60 @@ CLOSED ────error rate high────→ OPEN
 ```
 
 ### 2️⃣ **Configure infrastructure**
+
+**RabbitMQ:**
 ```yaml
-# RabbitMQ
 Exchange: codelytv.video.topic
 Queue: user.stats.increment_count_on_video_published
 Binding: codelytv.video.*.event.video.published
+DLQ: user.stats.increment_count_on_video_published.dlq
+```
+
+**AWS SNS+SQS:**
+```yaml
+SNS Topic: codelytv-video-events
+SQS Queue: user-stats-queue
+Filter Policy: {"event_type": ["video.published"]}
+DLQ: user-stats-dlq
+```
+
+**AWS EventBridge:**
+```yaml
+Bus: codelytv-event-bus
+Rule: video-events-rule
+Event Pattern: {"detail-type": ["video"], "source": ["codelytv"]}
+Targets: [CloudWatch, Lambda, HTTP API]
+DLQ: eventbridge-dlq (SQS)
 ```
 
 ### 3️⃣ **Implement idempotent consumer**
 ```java
 @EventHandler("video.published")
 public void handle(VideoPublishedEvent event) {
-    // ✅ Idempotent
-    userRepository.upsert(event.getUserId(), stats);
-    
-    // ❌ Not idempotent  
-    // userStats.increment(event.getUserId());
+    try {
+        // ✅ Idempotent operation
+        userRepository.upsert(event.getUserId(), stats);
+        
+        // ✅ With deduplication
+        if (!processedEvents.contains(event.getId())) {
+            userStats.increment(event.getUserId());
+            processedEvents.add(event.getId());
+        }
+        
+    } catch (Exception e) {
+        // Will retry automatically → DLQ after max attempts
+        log.error("Failed to process event: {}", event.getId(), e);
+        throw e;
+    }
 }
+```
+
+### 4️⃣ **Configure DLQ monitoring**
+```yaml
+CloudWatch Alarms:
+- DLQ message count > 10
+- Failed event processing rate
+- Consumer lag monitoring
 ```
 
 ---
@@ -229,9 +348,17 @@ public void handle(VideoPublishedEvent event) {
 
 **Golden Rule**: An event represents something that **ALREADY HAPPENED** in your domain
 
-**To get started**: RabbitMQ or AWS SNS+SQS, idempotent operations, descriptive names
+**Error Management Trinity**: **DLQ + Retry + Idempotency** are mandatory
 
-**Avoid**: Kafka for simple cases, non-idempotent operations, critical sync events
+**Technology Choices**:
+- **RabbitMQ**: Traditional microservices, full control
+- **SNS+SQS**: AWS cloud, message queuing 
+- **EventBridge**: Serverless, HTTP callbacks
+- **Kafka**: High-volume streaming only
+
+**To get started**: Choose your broker, design idempotent consumers, configure DLQ
+
+**Avoid**: Kafka for simple events, non-idempotent operations, missing DLQ
 
 ---
 
